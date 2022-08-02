@@ -1860,7 +1860,6 @@ class Stream extends Thread {
         if (this.filter==false || this.filter==true) {
             // OSC
             if (this.protocol.equals("OSC")) {
-                // msg.clear(); 
                 for (int i = 0; i < NUM_ACCEL_DIMS; i++) {
                     msg.clearArguments();
                     // msg.add(i+1);
@@ -1875,8 +1874,8 @@ class Stream extends Thread {
                         println(e.getMessage());
                         msg.setAddrPattern(address); // cleanup just in case this is the only instance.
                     }
+                    msg.setAddrPattern(address); // cleanup just in case this is the only instance.
                 }
-                msg.setAddrPattern(address); // cleanup just in case this is the only instance.
             // UDP
             } else if (this.protocol.equals("UDP")) {
                 String outputter = "{\"type\":\"accelerometer\",\"data\":[";
