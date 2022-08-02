@@ -1663,7 +1663,8 @@ class Stream extends Thread {
             if (this.protocol.equals("OSC")) {
                 for (int i=0;i<numChan;i++) {
                     msg.clearArguments();
-                    msg.add(i+1);
+                    // msg.add(i+1);  // ROOT OF ALL EVIL
+                    msg.setAddrPattern(address + "/" + (i+1) + "/");
                     for (int j=0;j<numBandPower;j++) {
                         msg.add(dataProcessing.avgPowerInBins[i][j]); // [CHAN][BAND]
                     }
@@ -1671,8 +1672,10 @@ class Stream extends Thread {
                         this.osc.send(msg,this.netaddress);
                     } catch (Exception e) {
                         println(e.getMessage());
+                        msg.setAddrPattern(address); // cleanup just in case this is the only instance.
                     }
                 }
+                msg.setAddrPattern(address); // cleanup just in case this is the only instance.
             // UDP
             } else if (this.protocol.equals("UDP")) {
                 // DELTA, THETA, ALPHA, BETA, GAMMA
@@ -1857,9 +1860,12 @@ class Stream extends Thread {
         if (this.filter==false || this.filter==true) {
             // OSC
             if (this.protocol.equals("OSC")) {
+                // msg.clear(); 
                 for (int i = 0; i < NUM_ACCEL_DIMS; i++) {
                     msg.clearArguments();
-                    msg.add(i+1);
+                    // msg.add(i+1);
+                    msg.setAddrPattern(address + "/" + (1 + i) + "/");
+
                     //ADD Accelerometer data
                     msg.add(w_accelerometer.getLastAccelVal(i));
                     // println(i + " | " + w_accelerometer.getLastAccelVal(i));
@@ -1867,8 +1873,10 @@ class Stream extends Thread {
                         this.osc.send(msg,this.netaddress);
                     } catch (Exception e) {
                         println(e.getMessage());
+                        msg.setAddrPattern(address); // cleanup just in case this is the only instance.
                     }
                 }
+                msg.setAddrPattern(address); // cleanup just in case this is the only instance.
             // UDP
             } else if (this.protocol.equals("UDP")) {
                 String outputter = "{\"type\":\"accelerometer\",\"data\":[";
