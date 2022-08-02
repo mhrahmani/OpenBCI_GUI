@@ -1863,7 +1863,7 @@ class Stream extends Thread {
                 for (int i = 0; i < NUM_ACCEL_DIMS; i++) {
                     msg.clearArguments();
                     // msg.add(i+1);
-                    msg.setAddrPattern(address + "/" + (1 + i) + "/");
+                    msg.setAddrPattern(address + "/" + (i+1) + "/");
 
                     //ADD Accelerometer data
                     msg.add(w_accelerometer.getLastAccelVal(i));
