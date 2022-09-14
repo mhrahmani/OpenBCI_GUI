@@ -14,6 +14,11 @@
 # Windows:
 # python3 Networking-Test-Kit/LSL/brainflow_lsl.py --board-id 2 --serial-port COM3 --name test --data-type EXG --channel-names 1,2,3,4,5,6,7,8 --uid brainflow
 
+# python "C:\code\OpenBCI_GUI_mh\Networking-Test-Kit\LSL\brainflow_lsl.py" --board-id 0 --serial-port COM6 --name test --data-type EXG --channel-names 1,2,3,4,5,6,7,8 --uid brainflow
+# python "C:\code\OpenBCI_GUI_mh\Networking-Test-Kit\LSL\brainflow_lsl.py" --board-id 0 --serial-port COM6 --name cyton_eeg --data-type EXG --channel-names 'FC1','FC2','C3','C4','P3','P4','Cz','POz' --uid brainflow_lsl_python_1
+
+
+
 import argparse
 import time
 import numpy as np
@@ -29,6 +34,7 @@ from pylsl import StreamInfo, StreamOutlet, local_clock
 def channel_select(board, board_id, data_type): 
     switcher = { 
         'EXG': board.get_exg_channels(board_id),
+        # 'ACCEL' 
         # can add more
     } 
  
@@ -62,9 +68,9 @@ def main():
 
     # LSL initialization  
     channel_names = args.channel_names.split(',')
-    n_channels = len(channel_names)
+    n_channels = len(channel_names) # WHY?!!!! Use board info instead
     srate = board.get_sampling_rate(args.board_id)
-    info = StreamInfo(args.name, args.data_type, n_channels, srate, 'double64', args.uid)
+    info = StreamInfo(args.name, args.data_type, n_channels, srate, 'float32', args.uid)
     outlet = StreamOutlet(info)
     fw_delay = 0
 
@@ -84,7 +90,7 @@ def main():
     #board.config_board("x8060110X")
 
     # start stream
-    board.start_stream(45000, args.streamer_params)
+    board.start_stream(45000, 'file://C:/Users/MH Aware/Desktop/EEG Research/brainflow_streams/brainflow_cyton_lsl_openvibe_1.txt:w')
     time.sleep(1)
     start_time = local_clock()
     sent_samples = 0
@@ -105,6 +111,7 @@ def main():
     print("Now sending data...")
     while True:
         data = board.get_board_data()[chans]
+        print(data)
 
         # It's best to apply filters on the receiving end, but this is here just for testing purposes.
         """
